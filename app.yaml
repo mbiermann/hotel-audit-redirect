@@ -1,0 +1,6 @@
+runtime: nodejs10
+
+service: hotel-audit-redirect-webservice
+
+env_variables:
+  SECRET_KEY: big-secret
