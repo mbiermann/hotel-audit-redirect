@@ -17,7 +17,7 @@ client.on('error', (err) => {
 
 function storeURL(url) {
     return new Promise((resolve, reject) => {
-        redis.get(url, (err, reply) => {
+        client.get(url, (err, reply) => {
             if(err) {
                 return reject('error occurred during the redis operation');
             }
