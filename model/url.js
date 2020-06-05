@@ -26,9 +26,9 @@ function storeURL(url) {
             } else {
                 // make new entry
                 let id = shortId.generate();
-                client.set(id, url);
+                client.set(id, url, 'EX', process.env.REDIS_TTL);
                 // set URL as a key too for searching
-                client.set(url, id);
+                client.set(url, id, 'EX', process.env.REDIS_TTL);
                 // return
                 resolve(id);
             }
