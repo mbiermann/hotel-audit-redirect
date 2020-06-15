@@ -16,6 +16,7 @@
     "shortid": "^2.2.15",
     "custom-env": "^2.0.1",
     "cors": "^2.8.5",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "measurement-protocol": "^0.1.1"
   }
 }
