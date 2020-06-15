@@ -22,20 +22,20 @@ const trackEvent = (action, label) => {
 app.get('/favicon.ico', (req, res) => res.status(200))
 
 app.get('/:url', async (req,res) => {
+    const referrer = req.get('Referrer')
     // decode and redirect url
     try {
         let url = await models.findURL(req.params.url);
         if(url !== null) {
-            trackEvent('Redirect Open Success', url)
+            trackEvent('Redirect Open Success', referrer+"::"+url)
             res.redirect(url);
         } else {
-            trackEvent('Redirect Open Failure', req.params.url)
-            res.send('invalid/expired URL');            
+            trackEvent('Redirect Open Failure Expired URL', referrer+"::"+req.params.url)
+            res.send('invalid/expired URL');
         }
     }
     catch(e) {
-        console.log(e);
-        trackEvent('Redirect Open Error', req.params.url+":"+e.message)
+        trackEvent('Redirect Open Error', referrer+"::"+req.params.url+"::"+e.message)
         res.send('invalid/expired URL');
     }
 });
@@ -44,20 +44,18 @@ app.use(authMiddleware)
 
 app.post('/api/short', async (req,res) => {
     if(validUrl.isUri(req.body.url)) {
-        trackEvent('Redirect Create Success', req.body.url)
         // valid URL        
         try {
             let hash = await models.storeURL(req.body.url);
-            console.log(req.hostname + '/' +hash)
+            trackEvent('Redirect Create Success', req.body.url+"::"+hash)
             res.send(req.hostname + '/' +hash);
         }
         catch(e) {
-            console.log(e);
-            trackEvent('Redirect Create Error', req.body.url+":"+e.message)
+            trackEvent('Redirect Create Error', req.body.url+"::"+e.message)
             res.send('error occurred while storing URL.');
         }
     } else {
-        trackEvent('Redirect Create Failure', req.body.url)
+        trackEvent('Redirect Create Failure Invalid URL', req.body.url)
         res.send('invalid URL');
     }
 });
